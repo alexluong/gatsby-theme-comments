@@ -18,8 +18,8 @@ This differs from other solutions in that it gives you complete control of your 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [Notes](#notes)
-- [Install](#install)
-- [How to use](#how-to-use)
+- [Installation](#installation)
+- [Usage](#usage)
   - [1. Register](#1-register)
   - [2. Use in React](#2-use-in-react)
 - [APIs](#apis)
@@ -79,13 +79,13 @@ GATSBY_FIREBASE_APP_ID=<YOUR_FIREBASE_APP_ID>
 And voila, you're ready to rock and roll!
 
 
-## Install
+## Installation
 
 ```
 npm install gatsby-theme-comments
 ```
 
-## How to use
+## Usage
 
 ### 1. Register
 
