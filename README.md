@@ -48,7 +48,7 @@ npm install -D dotenv
 ```js
 require("dotenv").config()
 
-modules.export = {
+module.exports = {
   plugins: [
     ...otherPlugins,
 
@@ -92,7 +92,7 @@ npm install gatsby-theme-comments
 In `gatsby-config.js`:
 
 ```js
-modules.export = {
+module.exports = {
   plugins: [
     ...otherPlugins,
 
