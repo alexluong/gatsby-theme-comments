@@ -24,13 +24,11 @@ function CommentSection({ id }) {
       })
   })
 
-  console.log(comments)
-
   return (
-    <>
+    <aside>
       <AddComment id={id} />
       <Comments comments={comments} id={id} />
-    </>
+    </aside>
   )
 }
 

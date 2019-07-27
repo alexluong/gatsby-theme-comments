@@ -4,7 +4,6 @@ import { distanceInWordsToNow } from "date-fns"
 
 function Comment({ comment }) {
   const { name, content, time } = comment
-  console.log(time)
   const date = time.toDate()
 
   return (
@@ -16,10 +15,11 @@ function Comment({ comment }) {
           css={css({ width: "100%", borderRadius: "100%" })}
         />
       </div>
-      <div>
-        <div>
-          {name} - {distanceInWordsToNow(date)} ago
-        </div>
+      <div css={css({ flex: 1 })}>
+        <Flex css={{ justifyContent: "space-between" }}>
+          <span css={css({ color: "primary", fontWeight: 800 })}>{name}</span>
+          <small>{distanceInWordsToNow(date)} ago</small>
+        </Flex>
         <p css={css({ my: 0 })}>{content}</p>
       </div>
     </Flex>
