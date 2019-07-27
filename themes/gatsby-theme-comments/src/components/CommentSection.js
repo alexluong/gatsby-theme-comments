@@ -1,5 +1,6 @@
 import React from "react"
 import { useFirebase } from "gatsby-plugin-firebase"
+import AddComment from "./AddComment"
 import Comments from "./Comments"
 
 function CommentSection({ id }) {
@@ -14,7 +15,10 @@ function CommentSection({ id }) {
       .onSnapshot(querySnapshot => {
         const arr = []
         querySnapshot.forEach(doc => {
-          arr.push({ ...doc.data(), id: doc.id })
+          arr.push({
+            ...doc.data({ serverTimestamps: "estimate" }),
+            id: doc.id,
+          })
         })
         setComments(arr)
       })
@@ -22,7 +26,12 @@ function CommentSection({ id }) {
 
   console.log(comments)
 
-  return <Comments comments={comments} />
+  return (
+    <>
+      <AddComment id={id} />
+      <Comments comments={comments} id={id} />
+    </>
+  )
 }
 
 export default CommentSection
