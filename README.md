@@ -22,9 +22,19 @@ This differs from other solutions in that it gives you complete control of your 
 - [Usage](#usage)
   - [1. Register](#1-register)
   - [2. Use in React](#2-use-in-react)
+- [Showcase](#showcase)
+  - [UI child themes of `gatsby-theme-comments`](#ui-child-themes-of-gatsby-theme-comments)
+  - [Sites that uses `gatsby-theme-comments`](#sites-that-uses-gatsby-theme-comments)
 - [APIs](#apis)
-  - [CommentEmbed Props](#commentembed-props)
-    - [id](#id)
+  - [Comment](#comment)
+  - [Exports](#exports)
+    - [CommentSection](#commentsection)
+      - [id](#id)
+    - [CommentCount](#commentcount)
+      - [id](#id-1)
+    - [useComments](#usecomments)
+    - [useCommentCount](#usecommentcount)
+    - [useAddComment](#useaddcomment)
   - [Shadowable Components](#shadowable-components)
 - [License](#license)
 
@@ -103,10 +113,10 @@ module.exports = {
 
 ### 2. Use in React
 
-In your post template (`src/templates/post.js`), you can use `CommentEmbed` in your JSX:
+In your post template (`src/templates/post.js`), you can use `CommentSection` in your JSX:
 
 ```jsx
-import { CommentsEmbed } from "gatsby-theme-comments"
+import { CommentSection } from "gatsby-theme-comments"
 
 ...
 
@@ -115,7 +125,7 @@ return (
     <Article />
     <Author />
 
-    <CommentsEmbed id={slug} />
+    <CommentSection id={slug} />
   </Layout>
 )
 ```
@@ -124,15 +134,128 @@ The `id` prop must be a unique string or number that identifies the post. It can
 
 For example, let's say that you use `slug` as the identifier. If you want to change the post's slug, remember to go into your Firebase database and change that value too.
 
+## Showcase
+
+### UI child themes of `gatsby-theme-comments`
+
+- [Barebone/Core](https://npmjs.com/package/gatsby-theme-comments)
+- [Minimal UI](https://npmjs.com/package/gatsby-theme-comments-ui)
+
+If you wrote a child theme for `gatsby-theme-comments`, please submit a [PR](https://github.com/alexluong/gatsby-theme-comments/edit/master/README.md) to add your theme to the list.
+
+### Sites that uses `gatsby-theme-comments`
+
+Nobody is using this plugin. Sad face 😢
+
+If you use `gatsby-theme-comments`, please submit a [PR](https://github.com/alexluong/gatsby-theme-comments/edit/master/README.md) to add your site to the list.
+
+Feel free to reach out or open an issue if you're interested in using this. I'm available to answer any questions or take feature requests.
+
 ## APIs
 
-### CommentEmbed Props
+### Comment
 
-#### id
+The `Comment` interface is an object that looks like this:
+
+```ts
+interface Comment {
+  id: string;
+  content: string;
+  name: string;
+  createdAt: Timestamp;
+}
+
+interface Timestamp {
+  nanoseconds: number;
+  milliseconds: number;
+}
+```
+
+### Exports
+
+#### CommentSection
+
+A component that renders a form for users to add comment as well as all the comments of the post. This is the simplest way to use `gatsby-theme-comments`. You can use this component in your `Post` template.
+
+##### id
 
 > `string` | *required*
 
 A unique identifier used to identify each post
+
+#### CommentCount
+
+A component that renders the comment count of the post
+
+##### id
+
+> `string` | *required*
+
+A unique identifier used to identify each post
+
+#### useComments
+
+> `function(id: string): { loading: boolean, comments: Array<Comment> }`
+
+This hook takes the identifier as argument and gives you the corresponding array of comments.
+
+If the identifier is invalid, the comment array is empty.
+
+```jsx
+function Comments({ id }) {
+  const { loading, comments } = useComments()
+
+  if (loading) {
+    return <p>Loading...</p>
+  }
+
+  return (
+    <ul>
+      {comments.map(comment) => (
+        <li key={comment.id}>{comment.content}</li>
+      )}
+    </ul>
+  )
+}
+```
+
+#### useCommentCount
+
+> `function(id: string): { loading: boolean, commentCount: number }`
+
+This hook takes the identifier as argument and gives you the corresponding number of comments.
+
+If the identifier is invalid, the count is 0. The reason for this is that the plugin only keeps track of posts with at least 1 comment. Therefore, if a post doesn't have any, its `id` would not be available in database.
+
+```jsx
+function CommentCount({ id }) {
+  const { loading, commentCount } = useCommentCount()
+
+  if (loading) {
+    return <p>0 comment</p>
+  }
+
+  return <p>{commentCount} comment{commentCount > 1 ? "s" : ""}</p>
+}
+```
+
+#### useAddComment
+
+> `function(): function(comment: Comment): void`
+
+This hook returns a function for you to add comment to database.
+
+```jsx
+function AddComment({ comment }) {
+  const addComment = useAddComment()
+
+  return (
+    <button onClick={() => addComment(comment)}>Add</button>
+  )
+}
+```
+
+*Note*: The `Comment` you pass to the `addComment` function is one without `Timestamp`. The `createdAt` field will be included whenever the plugin makes a call to Firebase. You don't have to construct that value.
 
 ### Shadowable Components
 
