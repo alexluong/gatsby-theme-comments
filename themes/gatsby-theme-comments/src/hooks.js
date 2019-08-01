@@ -35,6 +35,33 @@ export function useComments(id) {
   return { loading, error, comments }
 }
 
+export function useCommentCount(id) {
+  const [loading, setLoading] = React.useState(false)
+  const [error, setError] = React.useState(null)
+  const [count, setCount] = React.useState(0)
+
+  useFirebase(firebase => {
+    setLoading(true)
+    firebase
+      .firestore()
+      .collection("posts")
+      .doc(id)
+      .onSnapshot(
+        doc => {
+          const { commentCount } = doc.data()
+          setLoading(false)
+          setCount(commentCount)
+        },
+        error => {
+          setLoading(false)
+          setError(error)
+        },
+      )
+  })
+
+  return { loading, error, count }
+}
+
 export function useAddComment() {
   const firebase = React.useContext(FirebaseContext)
   const [loading, setLoading] = React.useState(false)
@@ -43,13 +70,18 @@ export function useAddComment() {
   function addComment(comment) {
     setLoading(true)
 
-    firebase
-      .firestore()
-      .collection("comments")
-      .add({
-        ...comment,
-        time: firebase.firestore.FieldValue.serverTimestamp(),
-      })
+    const db = firebase.firestore()
+    const batch = db.batch()
+    batch.set(db.collection("comments").doc(), {
+      ...comment,
+      time: firebase.firestore.FieldValue.serverTimestamp(),
+    })
+    batch.update(db.collection("posts").doc(comment.postId), {
+      commentCount: firebase.firestore.FieldValue.increment(1),
+    })
+
+    batch
+      .commit()
       .then(() => {
         setLoading(false)
       })
