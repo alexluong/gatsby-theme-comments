@@ -17,43 +17,45 @@ This differs from other solutions in that it gives you complete control of your 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Notes](#notes)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [1. Register](#1-register)
-  - [2. Use in React](#2-use-in-react)
-- [Showcase](#showcase)
-  - [UI child themes of `gatsby-theme-comments`](#ui-child-themes-of-gatsby-theme-comments)
-  - [Sites that uses `gatsby-theme-comments`](#sites-that-uses-gatsby-theme-comments)
-- [APIs](#apis)
-  - [Comment](#comment)
-  - [Exports](#exports)
-    - [CommentSection](#commentsection)
-      - [id](#id)
-    - [CommentCount](#commentcount)
-      - [id](#id-1)
-    - [useComments](#usecomments)
-    - [useCommentCount](#usecommentcount)
-    - [useAddComment](#useaddcomment)
-  - [Shadowable Components](#shadowable-components)
-- [License](#license)
+- [gatsby-theme-comments](#gatsby-theme-comments)
+  - [The problem](#the-problem)
+  - [This solution](#this-solution)
+  - [Table of Contents](#table-of-contents)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [1. Register plugins](#1-register-plugins)
+    - [2. Set up Firestore and environment variables](#2-set-up-firestore-and-environment-variables)
+    - [3. Use in React](#3-use-in-react)
+  - [Showcase](#showcase)
+    - [UI child themes of `gatsby-theme-comments`](#ui-child-themes-of-gatsby-theme-comments)
+    - [Sites that uses `gatsby-theme-comments`](#sites-that-uses-gatsby-theme-comments)
+  - [APIs](#apis)
+    - [Comment](#comment)
+    - [Exports](#exports)
+      - [CommentSection](#commentsection)
+        - [id](#id)
+      - [CommentCount](#commentcount)
+        - [id](#id-1)
+      - [useComments](#usecomments)
+      - [useCommentCount](#usecommentcount)
+      - [useAddComment](#useaddcomment)
+    - [Shadowable Components](#shadowable-components)
+  - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Notes
-
-This theme uses `firebase` to store comments. You will need to initialize a `firebase` instance on your Gatsby site.
-
-One way to go about that is using [`gatsby-plugin-firebase`](https://github.com/alexluong/gatsby-plugin-firebase). Here is a quick instruction on how to set it up:
-
-1. Install
+## Installation
 
 ```
-npm install firebase gatsby-plugin-firebase
+npm install gatsby-theme-comments gatsby-plugin-firebase
 npm install -D dotenv
 ```
 
-2. Register the plugin in `gatsby-config.js`
+## Usage
+
+### 1. Register plugins
+
+In `gatsby-config.js`:
 
 ```js
 require("dotenv").config()
@@ -62,19 +64,21 @@ module.exports = {
   plugins: [
     ...otherPlugins,
 
-    {
-      resolve: "gatsby-plugin-firebase",
-      options: {
-        features: {
-          firestore: true,
-        },
-      },
-    },
+    "gatsby-plugin-firebase",
+    "gatsby-theme-comments",
   ],
 }
 ```
 
-3. Add environment variables in `.env`
+### 2. Set up Firestore and environment variables
+
+- Create a Firebase project
+- Create a new Firestore database
+- Inside the `Database` page, open the `Indexes` tab and add a composite index like so:
+
+![Firestore index instruction](https://github.com/alexluong/gatsby-theme-comments/tree/master/firestore-index.png)
+
+- Create a `.env` in your root directory:
 
 ```
 GATSBY_FIREBASE_API_KEY=<YOUR_FIREBASE_API_KEY>
@@ -86,32 +90,7 @@ GATSBY_FIREBASE_MESSAGING_SENDER_ID=<YOUR_FIREBASE_MESSAGING_SENDER_ID>
 GATSBY_FIREBASE_APP_ID=<YOUR_FIREBASE_APP_ID>
 ```
 
-And voila, you're ready to rock and roll!
-
-
-## Installation
-
-```
-npm install gatsby-theme-comments
-```
-
-## Usage
-
-### 1. Register
-
-In `gatsby-config.js`:
-
-```js
-module.exports = {
-  plugins: [
-    ...otherPlugins,
-
-    "gatsby-theme-comments",
-  ],
-}
-```
-
-### 2. Use in React
+### 3. Use in React
 
 In your post template (`src/templates/post.js`), you can use `CommentSection` in your JSX:
 
@@ -163,11 +142,13 @@ interface Comment {
   content: string;
   name: string;
   createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 interface Timestamp {
   nanoseconds: number;
   milliseconds: number;
+  toDate: function;
 }
 ```
 
@@ -181,7 +162,7 @@ A component that renders a form for users to add comment as well as all the comm
 
 > `string` | *required*
 
-A unique identifier used to identify each post
+A unique identifier used to identify each post. It cannot contain special characters such as "/".
 
 #### CommentCount
 
@@ -195,7 +176,7 @@ A unique identifier used to identify each post
 
 #### useComments
 
-> `function(id: string): { loading: boolean, comments: Array<Comment> }`
+> `function(id: string): { loading: boolean, error: Error, comments: Array<Comment> }`
 
 This hook takes the identifier as argument and gives you the corresponding array of comments.
 
@@ -221,7 +202,7 @@ function Comments({ id }) {
 
 #### useCommentCount
 
-> `function(id: string): { loading: boolean, commentCount: number }`
+> `function(id: string): { loading: boolean, error: Error, commentCount: number }`
 
 This hook takes the identifier as argument and gives you the corresponding number of comments.
 
@@ -241,13 +222,13 @@ function CommentCount({ id }) {
 
 #### useAddComment
 
-> `function(): function(comment: Comment): void`
+> `function(): { loading: boolean, error: Error, addComment: function(comment: Comment): void }`
 
 This hook returns a function for you to add comment to database.
 
 ```jsx
 function AddComment({ comment }) {
-  const addComment = useAddComment()
+  const { addComment } = useAddComment()
 
   return (
     <button onClick={() => addComment(comment)}>Add</button>
@@ -258,6 +239,16 @@ function AddComment({ comment }) {
 *Note*: The `Comment` you pass to the `addComment` function is one without `Timestamp`. The `createdAt` field will be included whenever the plugin makes a call to Firebase. You don't have to construct that value.
 
 ### Shadowable Components
+
+Here is a list of recommended components that you can shadow:
+
+- `components/Button.js`
+- `components/Comment.js`
+- `components/CommentCount.js`
+- `components/Comments.js`
+- `components/Form.js`
+- `components/Loading.js`
+- `components/TextField.js`
 
 ## License
 
