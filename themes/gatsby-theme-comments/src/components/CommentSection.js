@@ -1,28 +1,15 @@
 import React from "react"
-import { useFirebase } from "gatsby-plugin-firebase"
+import { useComments } from "../hooks"
+import Loading from "./Loading"
 import AddComment from "./AddComment"
 import Comments from "./Comments"
 
 function CommentSection({ id }) {
-  const [comments, setComments] = React.useState(null)
+  const { loading, comments } = useComments(id)
 
-  useFirebase(firebase => {
-    firebase
-      .firestore()
-      .collection("comments")
-      .orderBy("time", "desc")
-      .where("postId", "==", id)
-      .onSnapshot(querySnapshot => {
-        const arr = []
-        querySnapshot.forEach(doc => {
-          arr.push({
-            ...doc.data({ serverTimestamps: "estimate" }),
-            id: doc.id,
-          })
-        })
-        setComments(arr)
-      })
-  })
+  if (loading) {
+    return <Loading />
+  }
 
   return (
     <aside>

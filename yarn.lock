@@ -5630,6 +5630,11 @@ gatsby-plugin-feed@^2.3.4:
     lodash.merge "^4.6.2"
     rss "^1.2.2"
 
+gatsby-plugin-firebase@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/gatsby-plugin-firebase/-/gatsby-plugin-firebase-0.1.0.tgz#f30094edb1939a45e2843f3411c76468b81a8765"
+  integrity sha512-J7Y6+vPBpe8Jmpx4sqh6t/VIfWrwaz9sWiNOoTR1ANbVnmRH8MkAQ6eoZPMgFF+TaD3BiWXQtvzwiZY3s3LCuw==
+
 gatsby-plugin-mdx@^1.0.14:
   version "1.0.17"
   resolved "https://registry.yarnpkg.com/gatsby-plugin-mdx/-/gatsby-plugin-mdx-1.0.17.tgz#73a2a9196c6f7ecf40b1ceaecbe673db01d21b5b"

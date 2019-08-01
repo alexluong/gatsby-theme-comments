@@ -1,26 +1,17 @@
 import React from "react"
-import { FirebaseContext } from "gatsby-plugin-firebase"
 import Form from "./Form"
 import Button from "./Button"
 import TextField from "./TextField"
+import { useAddComment } from "../hooks"
 
 function Comments({ id }) {
-  const firebase = React.useContext(FirebaseContext)
   const [content, setContent] = React.useState("")
   const [name, setName] = React.useState("")
+  const { loading, addComment } = useAddComment()
 
   function comment(e) {
     e.preventDefault()
-
-    firebase
-      .firestore()
-      .collection("comments")
-      .add({
-        name,
-        content,
-        postId: id,
-        time: firebase.firestore.FieldValue.serverTimestamp(),
-      })
+    addComment({ name, content, postId: id })
   }
 
   return (
@@ -39,6 +30,7 @@ function Comments({ id }) {
         required
       />
       <Button>Comment</Button>
+      {loading && <p>Loading...</p>}
     </Form>
   )
 }
