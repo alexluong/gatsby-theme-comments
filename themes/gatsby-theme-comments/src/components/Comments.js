@@ -1,9 +1,14 @@
 import React from "react"
+import Loading from "./Loading"
 import Comment from "./Comment"
 
-function Comments({ comments }) {
-  if (!comments) {
-    return <p>Loading...</p>
+function Comments({ comments, loading }) {
+  if (loading) {
+    return <Loading />
+  }
+
+  if (comments.length === 0) {
+    return <p>There is no comments.</p>
   }
 
   return (

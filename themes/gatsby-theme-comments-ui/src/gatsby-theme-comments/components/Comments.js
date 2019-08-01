@@ -1,11 +1,16 @@
 import React from "react"
 import { css } from "theme-ui"
 
-import Comment from "./Comment"
+import Loading from "gatsby-theme-comments/src/components/Loading"
+import Comment from "gatsby-theme-comments/src/components/Comment"
 
-function Comments({ comments, id }) {
-  if (!comments) {
-    return <p>Loading...</p>
+function Comments({ comments, loading }) {
+  if (loading) {
+    return <Loading />
+  }
+
+  if (comments.length === 0) {
+    return <p>There is no comments.</p>
   }
 
   return (

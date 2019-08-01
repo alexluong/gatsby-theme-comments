@@ -48,9 +48,9 @@ export function useCommentCount(id) {
       .doc(id)
       .onSnapshot(
         doc => {
-          const { commentCount } = doc.data()
+          const data = doc.data()
           setLoading(false)
-          setCount(commentCount)
+          setCount(data ? data.commentCount : 0)
         },
         error => {
           setLoading(false)
@@ -77,9 +77,13 @@ export function useAddComment() {
         ...comment,
         time: firebase.firestore.FieldValue.serverTimestamp(),
       })
-      batch.update(db.collection("posts").doc(comment.postId), {
-        commentCount: firebase.firestore.FieldValue.increment(1),
-      })
+      batch.set(
+        db.collection("posts").doc(comment.postId),
+        {
+          commentCount: firebase.firestore.FieldValue.increment(1),
+        },
+        { merge: true },
+      )
 
       batch
         .commit()
