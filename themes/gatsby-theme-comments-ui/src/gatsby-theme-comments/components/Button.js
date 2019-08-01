@@ -1,7 +1,7 @@
 import React from "react"
 import { css } from "theme-ui"
 
-function Button(props) {
+function Button({ loading, children, ...props }) {
   return (
     <button
       {...props}
@@ -15,7 +15,9 @@ function Button(props) {
         fontSize: 1,
         cursor: "pointer",
       })}
-    />
+    >
+      {loading ? "Commenting..." : children}
+    </button>
   )
 }
 

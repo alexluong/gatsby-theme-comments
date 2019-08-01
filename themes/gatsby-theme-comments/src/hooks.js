@@ -68,27 +68,31 @@ export function useAddComment() {
   const [error, setError] = React.useState(null)
 
   function addComment(comment) {
-    setLoading(true)
+    return new Promise((resolve, reject) => {
+      setLoading(true)
 
-    const db = firebase.firestore()
-    const batch = db.batch()
-    batch.set(db.collection("comments").doc(), {
-      ...comment,
-      time: firebase.firestore.FieldValue.serverTimestamp(),
-    })
-    batch.update(db.collection("posts").doc(comment.postId), {
-      commentCount: firebase.firestore.FieldValue.increment(1),
-    })
+      const db = firebase.firestore()
+      const batch = db.batch()
+      batch.set(db.collection("comments").doc(), {
+        ...comment,
+        time: firebase.firestore.FieldValue.serverTimestamp(),
+      })
+      batch.update(db.collection("posts").doc(comment.postId), {
+        commentCount: firebase.firestore.FieldValue.increment(1),
+      })
 
-    batch
-      .commit()
-      .then(() => {
-        setLoading(false)
-      })
-      .catch(error => {
-        setLoading(false)
-        setError(error)
-      })
+      batch
+        .commit()
+        .then(() => {
+          setLoading(false)
+          resolve()
+        })
+        .catch(error => {
+          setLoading(false)
+          setError(error)
+          reject(error)
+        })
+    })
   }
 
   return { loading, error, addComment }

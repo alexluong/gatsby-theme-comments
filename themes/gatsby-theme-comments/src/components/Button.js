@@ -1,6 +1,6 @@
 import React from "react"
 
-function Button(props) {
+function Button({ loading, ...props }) {
   return <button {...props} />
 }
 

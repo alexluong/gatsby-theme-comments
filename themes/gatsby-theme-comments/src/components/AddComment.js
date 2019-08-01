@@ -11,7 +11,10 @@ function Comments({ id }) {
 
   function comment(e) {
     e.preventDefault()
-    addComment({ name, content, postId: id })
+    addComment({ name, content, postId: id }).then(() => {
+      setContent("")
+      setName("")
+    })
   }
 
   return (
@@ -29,8 +32,7 @@ function Comments({ id }) {
         rows={3}
         required
       />
-      <Button>Comment</Button>
-      {loading && <p>Loading...</p>}
+      <Button loading={loading}>Comment</Button>
     </Form>
   )
 }
