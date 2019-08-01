@@ -3,8 +3,8 @@ import { css, Flex } from "theme-ui"
 import { distanceInWordsToNow } from "date-fns"
 
 function Comment({ comment }) {
-  const { name, content, time } = comment
-  const date = time.toDate()
+  const { name, content, updatedAt } = comment
+  const date = updatedAt.toDate()
 
   return (
     <Flex as="li" css={css({ mb: 3 })}>

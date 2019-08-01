@@ -8,10 +8,11 @@ export function useComments(id) {
 
   useFirebase(firebase => {
     setLoading(true)
+
     firebase
       .firestore()
       .collection("comments")
-      .orderBy("time", "desc")
+      .orderBy("createdAt", "desc")
       .where("postId", "==", id)
       .onSnapshot(
         querySnapshot => {
@@ -75,7 +76,8 @@ export function useAddComment() {
       const batch = db.batch()
       batch.set(db.collection("comments").doc(), {
         ...comment,
-        time: firebase.firestore.FieldValue.serverTimestamp(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
       })
       batch.set(
         db.collection("posts").doc(comment.postId),
