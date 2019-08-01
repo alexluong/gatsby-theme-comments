@@ -2,10 +2,18 @@
   "name": "gatsby-theme-comments",
   "version": "0.1.0",
   "license": "MIT",
+  "author": "Alex Luong",
+  "repository": "https://github.com/alexluong/gatsby-theme-comments",
+  "keywords": [
+    "gatsby",
+    "gatsby-theme",
+    "gatsby-plugin",
+    "firebase"
+  ],
   "peerDependencies": {
-    "gatsby": "^2.13.41",
-    "gatsby-plugin-firebase": "0.1.1",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6"
+    "gatsby": "^2.x",
+    "gatsby-plugin-firebase": "^0.x",
+    "react": "^16.8",
+    "react-dom": "^16.8"
   }
 }
