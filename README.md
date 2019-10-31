@@ -40,6 +40,7 @@ This differs from other solutions in that it gives you complete control of your 
       - [useCommentCount](#usecommentcount)
       - [useAddComment](#useaddcomment)
     - [Shadowable Components](#shadowable-components)
+    - [Demo](#demo)
   - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -249,6 +250,31 @@ Here is a list of recommended components that you can shadow:
 - `components/Form.js`
 - `components/Loading.js`
 - `components/TextField.js`
+
+## Demo
+
+To run the demo,
+
+- Clone this project
+- `cd` into `examples/demo`
+- Add your Firebase details to `.env`
+- Create an index in Firestore as shown in the second section
+- Run `npm start`
+- Try out the project on `localhost:8000`
+
+**Note**: Depending on how you've set up your Firestore project, you may have to change the permissions first. A good starting point would be:
+
+```js
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if true;
+    }
+  }
+}
+```
+
+Just don't use it in production.
 
 ## License
 
