@@ -252,14 +252,18 @@ Here is a list of recommended components that you can shadow:
 - `components/TextField.js`
 
 ## Demo
-To run the demo, 
-- clone this porject
+
+To run the demo,
+
+- Clone this project
 - `cd` into `examples/demo`
-- Add your Firebase details to `.env.example`
+- Add your Firebase details to `.env`
 - Create an index in Firestore as shown in the second section
 - Run `npm start`
 - Try out the project on `localhost:8000`
-- **Note**: Depending on how you've set up your Firestore project, you may have to change the permissions first. A good starting point would be:
+
+**Note**: Depending on how you've set up your Firestore project, you may have to change the permissions first. A good starting point would be:
+
 ```js
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -269,6 +273,7 @@ service cloud.firestore {
   }
 }
 ```
+
 Just don't use it in production.
 
 ## License
