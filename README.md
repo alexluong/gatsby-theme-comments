@@ -77,7 +77,7 @@ module.exports = {
 - Create a new Firestore database
 - Inside the `Database` page, open the `Indexes` tab and add a composite index like so:
 
-![Firestore index instruction](https://github.com/alexluong/gatsby-theme-comments/tree/master/firestore-index.png)
+![Firestore index instruction](https://github.com/alexluong/gatsby-theme-comments/blob/master/firestore-index.png?raw=true)
 
 - Create a `.env` in your root directory:
 
